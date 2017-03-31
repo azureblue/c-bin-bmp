@@ -25,8 +25,8 @@ static char bmpHeader[] = {
     0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 int writeBinBMP(const char * filePath, const int w, const int h, const int * pixels) {
-    int lineLength = (((w + 7) / 8) + 3) / 4 * 4;
-    int dataLen = lineLength * h;
+    int lineLen = (((w + 7) / 8) + 3) / 4 * 4;
+    int dataLen = lineLen * h;
     int len = dataLen + HEADER_PLUS_GAPS_LEN;
     char * data = calloc(dataLen, 1);
     if (!data)
@@ -40,10 +40,10 @@ int writeBinBMP(const char * filePath, const int w, const int h, const int * pix
         for (int i = 0; i < w; i += 8) {
             int bits = (w - i) > 8 ? 8 : w - i;
             char byte = 0;
-            int idx = j * w + i;
+            int idx = (h - j - 1) * w + i;
             for (int b = 0; b < bits; b++)
                 byte |= (pixels[idx + b] & 1) << (7 - b);
-            data[j * lineLength + i / 8] = byte;
+            data[j * lineLen + i / 8] = byte;
         }
     
     FILE * file = fopen(filePath, "wb");
